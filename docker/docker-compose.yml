@@ -1,0 +1,67 @@
+version: '3.7'
+
+services:
+  backend:
+    image: scalable-chat-app-backend
+    build:
+      context: ./../
+      dockerfile: ./docker/Dockerfile
+      target: development
+    volumes:
+      - ./../:/usr/src/app
+      - scalable-chat-app-backend-node-modules:/usr/src/app/node_modules
+      - scalable-chat-app-backend-dist:/usr/src/app/dist
+    expose:
+      - "3000"
+    networks:
+      - mainnet
+    depends_on:
+      - mongodb
+      - redis
+    restart: unless-stopped
+    deploy:
+      replicas: 5
+
+  nginx:
+    container_name: scalable-chat-app-nginx-load-balancer
+    image: nginx:latest
+    volumes:
+      - ./../nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+    networks:
+      - mainnet
+    ports:
+      - "3000:3000"
+
+  mongodb:
+    container_name: scalable-chat-app-mongodb
+    image: mongo:latest
+    networks:
+      - mainnet
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - scalable-chat-app-mongodata:/data/db
+
+  redis:
+    container_name: scalable-chat-app-redis-db
+    image: redis:7.0.7
+    networks:
+      - mainnet
+    expose:
+      - '6379'
+    volumes:
+      - scalable-chat-app-redisdata:/data
+
+networks:
+  mainnet:
+
+volumes:
+  scalable-chat-app-backend-node-modules:
+  scalable-chat-app-backend-dist:
+  scalable-chat-app-mongodata:
+  scalable-chat-app-redisdata:
