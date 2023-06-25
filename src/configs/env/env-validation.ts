@@ -1,11 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import {
-  IsBoolean,
-  IsEnum,
-  IsNumber,
-  IsString,
-  validateSync,
-} from 'class-validator';
+import { IsEnum, IsString, validateSync } from 'class-validator';
 import { NODE_ENV } from 'src/constants';
 
 class Env {

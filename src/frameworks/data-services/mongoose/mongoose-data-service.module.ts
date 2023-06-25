@@ -4,7 +4,7 @@ import { User, UserSchema } from './schemas';
 import { MongooseConfig } from 'src/configs/modules/mongoose/mongoose.config';
 import { DATA_SERVICE_TOKEN } from 'src/core/interfaces';
 import { MongooseDataService } from './mongoose-data-service.service';
-import * as repositories from 'src/frameworks/mongoose/repositories';
+import * as repositories from 'src/frameworks/data-services/mongoose/repositories';
 
 @Module({
   imports: [

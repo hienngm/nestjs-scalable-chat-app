@@ -3,7 +3,7 @@ import { DATA_SERVICE_TOKEN, IDataService } from 'src/core/interfaces';
 import { LoginDto, LoginResponseDto } from './dtos';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/frameworks/mongoose/schemas';
+import { User } from 'src/frameworks/data-services/mongoose/schemas';
 
 @Injectable()
 export class AuthUseCase {

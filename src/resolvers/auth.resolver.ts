@@ -6,11 +6,6 @@ import { LoginResponseDto, LoginDto } from 'src/use-cases/auth/dtos';
 export class AuthResolver {
   constructor(private readonly authUseCase: AuthUseCase) {}
 
-  @Query(() => String, { name: 'ping' })
-  async ping() {
-    return 'pong';
-  }
-
   @Mutation(() => LoginResponseDto, { name: 'login' })
   async login(@Args('loginDto') loginDto: LoginDto): Promise<LoginResponseDto> {
     return this.authUseCase.login(loginDto);

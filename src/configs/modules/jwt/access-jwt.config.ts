@@ -5,6 +5,7 @@ import { EnvConfigService } from '../../env/env.service';
 @Injectable()
 export class AccessJwtConfig implements JwtOptionsFactory {
   constructor(private envConfigService: EnvConfigService) {}
+
   createJwtOptions(): JwtModuleOptions | Promise<JwtModuleOptions> {
     const jwtSecret = this.envConfigService.getAccessJwtSecret();
     const expirationTime = this.envConfigService.getAccessJwtExpirationTime();
