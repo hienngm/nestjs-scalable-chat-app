@@ -1,19 +1,53 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { ISubscriber, IAuthUser } from 'src/common/interfaces';
-import { DATA_SERVICE_TOKEN, IDataService } from 'src/core/interfaces';
+import {
+  DATA_SERVICE_TOKEN,
+  IDataService,
+  IPubSubService,
+  IPublishChannelMessageParams,
+} from 'src/core/interfaces';
 import { RENEW_AUTH_DATA_STATUS, EVENT_TYPES } from './constants';
+import { User } from 'src/frameworks/data-services/mongoose/schemas';
 
 @Injectable()
-export class GraphQLSubscriptionService {
+export class GraphQLSubscriptionService implements IPubSubService {
   private readonly subscribersAuthDatas = new Map<string, ISubscriber>();
-  private readonly userSubscriberIds = new Map<string, string[]>();
+  private readonly pubSub: PubSub = new PubSub();
 
   constructor(
-    private readonly pubSub: PubSub,
     @Inject(DATA_SERVICE_TOKEN)
     private readonly dataService: IDataService,
   ) {}
+
+  async publishChannelMessage(
+    params: IPublishChannelMessageParams,
+  ): Promise<void> {
+    const { channelId, message } = params;
+    const users: User[] = await this.dataService.users.findByChannelId(
+      channelId,
+    );
+
+    await Promise.all(
+      users.map((user) =>
+        this.publishEventToUser({
+          userId: String(user._id),
+          event: {
+            type: EVENT_TYPES.CHANNEL_MESSAGE,
+            payload: {
+              channelId,
+              message,
+            },
+          },
+        }),
+      ),
+    );
+  }
 
   renewSubscriberAuthData(params: { user: IAuthUser; subscriberId: string }) {
     const { user, subscriberId } = params;
@@ -42,61 +76,39 @@ export class GraphQLSubscriptionService {
   subscribeToEvents(subscriber: ISubscriber) {
     const { id: subscriberId, userId } = subscriber;
     const eventsTopic = this.getEventsTopic(userId);
-    const asyncIterator = this.pubSub.asyncIterator(eventsTopic);
 
-    const userSubscriberIds = this.userSubscriberIds.get(userId) ?? [];
-    this.userSubscriberIds.set(userId, [...userSubscriberIds, subscriberId]);
+    this.subscribersAuthDatas.set(subscriberId, subscriber);
 
-    this.subscribersAuthDatas.set(subscriberId, {
-      ...subscriber,
-      asyncIterator,
-    });
-
-    return asyncIterator;
+    return this.pubSub.asyncIterator(eventsTopic);
   }
 
   async publishEventToUser(params: { userId: string; event: any }) {
     const { userId, event } = params;
 
-    const userSubscriberIds = this.userSubscriberIds.get(userId) ?? [];
-
-    const publishEventPromises = userSubscriberIds.map((subscriberId) =>
-      this.publishEventToSubscriber({ subscriberId, event }),
-    );
-
-    await Promise.all(publishEventPromises);
+    const eventTopic = this.getEventsTopic(userId);
+    this.pubSub.publish(eventTopic, event);
   }
 
-  async publishEventToSubscriber(params: {
-    event: any;
+  async shouldPublishEventToSubscriber(params: {
     subscriberId: string;
-  }): Promise<void> {
-    const { subscriberId, event } = params;
+  }): Promise<boolean> {
+    const { subscriberId } = params;
     const authData = await this.subscribersAuthDatas.get(subscriberId);
     if (!authData) {
-      throw new Error('Auth data not found');
+      throw new UnauthorizedException();
     }
 
-    const { userId } = authData;
-
-    const eventsTopic = this.getEventsTopic(userId);
     const isAuthDataValid = this.checkAuthDataValid(subscriberId);
-
     if (isAuthDataValid) {
-      this.pubSub.publish(eventsTopic, event);
-      return;
+      return true;
     }
 
-    try {
-      const canRenewAuthData = await this.canRenewAuthData(subscriberId);
-      if (!canRenewAuthData) {
-        throw new Error('Unauthorized');
-      }
-
-      this.pubSub.publish(eventsTopic, event);
-    } catch (error) {
-      authData.asyncIterator.throw(error);
+    const canRenewAuthData = await this.canRenewAuthData(subscriberId);
+    if (!canRenewAuthData) {
+      throw new UnauthorizedException();
     }
+
+    return true;
   }
 
   checkAuthDataValid(subscriberId: string): boolean {

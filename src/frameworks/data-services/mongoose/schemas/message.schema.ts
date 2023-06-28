@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Field, ObjectType } from '@nestjs/graphql';
 import * as mongoose from 'mongoose';
 import { IMessage } from 'src/core/entities';
 import { USER_COLLECTION, User } from './user.schema';
@@ -9,17 +10,22 @@ export type MessageDocument = mongoose.HydratedDocument<Message>;
 
 export const MESSAGE_COLLECTION = 'messages';
 @Schema({ timestamps: true, collection: MESSAGE_COLLECTION })
+@ObjectType()
 export class Message implements IMessage {
   @Prop()
+  @Field()
   content?: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: USER_COLLECTION })
+  @Field()
   sender?: User;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: CHANNEL_COLLECTION })
+  @Field()
   channel?: Channel;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: WORKSPACE_COLLECTION })
+  @Field()
   workspace?: Workspace;
 }
 

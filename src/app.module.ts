@@ -6,6 +6,7 @@ import * as resolvers from 'src/resolvers';
 import { AuthModule } from 'src/use-cases/auth/auth.module';
 import { EnvConfigModule } from './configs/env/env.module';
 import { GraphQLConfig } from './configs/modules/graphql/graphql.config';
+import { MessageModule } from './use-cases/message/message.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GraphQLConfig } from './configs/modules/graphql/graphql.config';
     }),
     EnvConfigModule,
     AuthModule,
+    MessageModule,
   ],
   providers: [...Object.values(resolvers)],
 })

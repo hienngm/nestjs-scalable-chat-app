@@ -4,5 +4,9 @@ import * as repositories from 'src/frameworks/data-services/mongoose/repositorie
 
 @Injectable()
 export class MongooseDataService implements IDataService {
-  constructor(public readonly users: repositories.UserRepository) {}
+  constructor(
+    public readonly users: repositories.UserRepository,
+    public readonly messages: repositories.MessageRepository,
+    public readonly channels: repositories.ChannelRepository,
+  ) {}
 }

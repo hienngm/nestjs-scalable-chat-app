@@ -7,6 +7,7 @@ import {
 } from '@nestjs/graphql';
 import { ISubscriber, IAuthUser } from 'src/common/interfaces';
 import { GraphQLSubscriptionService } from './graphql-subscription.service';
+import { EVENT_TYPES } from './constants';
 
 @Resolver()
 export class SubscriptionResolver {
@@ -25,8 +26,29 @@ export class SubscriptionResolver {
     });
   }
 
-  @Subscription(() => String, { name: 'events' })
+  @Subscription(() => String, {
+    name: 'events',
+    filter: function (...args) {
+      const self = this as SubscriptionResolver;
+      return self.eventFilter(...args);
+    },
+  })
   async subscribeToEvents(@Context('subscriber') subscriber: ISubscriber) {
     return this.subscriptionService.subscribeToEvents(subscriber);
+  }
+
+  private async eventFilter(
+    event: any,
+    _variables: any,
+    context: { subscriber: ISubscriber },
+  ): Promise<boolean> {
+    if (event.type === EVENT_TYPES.RENEW_AUTH_DATA) {
+      return true;
+    }
+
+    const { subscriber } = context;
+    return this.subscriptionService.shouldPublishEventToSubscriber({
+      subscriberId: subscriber.id,
+    });
   }
 }

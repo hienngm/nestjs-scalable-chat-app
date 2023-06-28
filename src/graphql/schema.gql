@@ -16,6 +16,24 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Workspace {
+  name: String!
+  owner: User!
+}
+
+type Channel {
+  name: String!
+  workspace: Workspace!
+  isPublic: Boolean!
+}
+
+type Message {
+  content: String!
+  sender: User!
+  channel: Channel!
+  workspace: Workspace!
+}
+
 type LoginResponseDto {
   accessToken: String!
   user: User!
@@ -26,10 +44,21 @@ type Query {
 }
 
 type Mutation {
-  login(loginDto: LoginDto!): LoginResponseDto!
+  login(loginInput: LoginInput!): LoginResponseDto!
+  createMessage(createMessageInput: CreateMessageInput!): Message!
+  renewSubscriberAuthData(subscriberId: String!): String!
 }
 
-input LoginDto {
+input LoginInput {
   username: String!
   password: String!
+}
+
+input CreateMessageInput {
+  channelId: String!
+  content: String!
+}
+
+type Subscription {
+  events: String!
 }

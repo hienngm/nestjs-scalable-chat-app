@@ -2,12 +2,12 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsString } from 'class-validator';
 
 @InputType()
-export class LoginInput {
+export class CreateMessageInput {
   @Field()
   @IsString()
-  username: string;
+  channelId: string;
 
   @Field()
   @IsString()
-  password: string;
+  content: string;
 }

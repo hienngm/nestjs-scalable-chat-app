@@ -14,4 +14,8 @@ export class UserRepository implements IUserRepository {
   async findOneByUsername(username: string): Promise<User | null> {
     return this.userModel.findOne({ username });
   }
+
+  async findByChannelId(channelId: string): Promise<User[]> {
+    return this.userModel.find({});
+  }
 }
