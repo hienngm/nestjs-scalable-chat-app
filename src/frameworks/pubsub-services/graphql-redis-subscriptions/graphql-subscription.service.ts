@@ -12,8 +12,9 @@ import {
   IPubSubService,
   IPublishChannelMessageParams,
 } from 'src/core/interfaces';
-import { RENEW_AUTH_DATA_STATUS, EVENT_TYPES } from './constants';
+import { RENEW_AUTH_DATA_STATUS } from './constants';
 import { User } from 'src/frameworks/data-services/mongoose/schemas';
+import { EventFactory, IEvent } from 'src/utils';
 
 @Injectable()
 export class GraphQLSubscriptionService implements IPubSubService {
@@ -37,13 +38,10 @@ export class GraphQLSubscriptionService implements IPubSubService {
       users.map((user) =>
         this.publishEventToUser({
           userId: String(user._id),
-          event: {
-            type: EVENT_TYPES.CHANNEL_MESSAGE,
-            payload: {
-              channelId,
-              message,
-            },
-          },
+          event: EventFactory.createChannelMessageEvent({
+            channelId,
+            message,
+          }),
         }),
       ),
     );
@@ -82,7 +80,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
     return this.pubSub.asyncIterator(eventsTopic);
   }
 
-  async publishEventToUser(params: { userId: string; event: any }) {
+  async publishEventToUser(params: { userId: string; event: IEvent }) {
     const { userId, event } = params;
 
     const eventTopic = this.getEventsTopic(userId);
@@ -152,12 +150,10 @@ export class GraphQLSubscriptionService implements IPubSubService {
       }
 
       const eventsTopic = this.getEventsTopic(authData.userId);
-      await this.pubSub.publish(eventsTopic, {
-        type: EVENT_TYPES.RENEW_AUTH_DATA,
-        payload: {
-          subscriberId,
-        },
+      const renewAuthDataEvent = EventFactory.createRenewAuthDataEvent({
+        subscriberId,
       });
+      await this.pubSub.publish(eventsTopic, renewAuthDataEvent);
 
       const unsubscribe = () => {
         if (!hasUnsubscribed) {

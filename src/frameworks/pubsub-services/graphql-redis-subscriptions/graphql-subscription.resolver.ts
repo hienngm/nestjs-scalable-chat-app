@@ -8,6 +8,7 @@ import {
 import { ISubscriber, IAuthUser } from 'src/common/interfaces';
 import { GraphQLSubscriptionService } from './graphql-subscription.service';
 import { EVENT_TYPES } from './constants';
+import { IEvent } from 'src/utils';
 
 @Resolver()
 export class SubscriptionResolver {
@@ -38,7 +39,7 @@ export class SubscriptionResolver {
   }
 
   private async eventFilter(
-    event: any,
+    event: IEvent,
     _variables: any,
     context: { subscriber: ISubscriber },
   ): Promise<boolean> {

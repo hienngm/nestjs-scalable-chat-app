@@ -5,6 +5,5 @@ export enum RENEW_AUTH_DATA_STATUS {
 
 export enum EVENT_TYPES {
   RENEW_AUTH_DATA = 'renew-auth-data',
-
   CHANNEL_MESSAGE = 'channel-message',
 }
