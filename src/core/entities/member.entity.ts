@@ -4,4 +4,6 @@ export interface IMember {
   workspace?: IWorkspace;
 
   user?: IUser;
+
+  isAdmin?: boolean;
 }

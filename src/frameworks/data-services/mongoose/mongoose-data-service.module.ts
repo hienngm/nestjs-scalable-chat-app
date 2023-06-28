@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Channel,
+  ChannelMember,
+  ChannelMemberSchema,
   ChannelSchema,
   Message,
   MessageSchema,
@@ -22,6 +24,7 @@ import * as repositories from 'src/frameworks/data-services/mongoose/repositorie
       { name: User.name, schema: UserSchema },
       { name: Message.name, schema: MessageSchema },
       { name: Channel.name, schema: ChannelSchema },
+      { name: ChannelMember.name, schema: ChannelMemberSchema },
     ]),
   ],
   providers: [

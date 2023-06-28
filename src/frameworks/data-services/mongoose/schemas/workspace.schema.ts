@@ -3,13 +3,14 @@ import * as mongoose from 'mongoose';
 import { IWorkspace } from 'src/core/entities';
 import { USER_COLLECTION, User } from './user.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { BaseSchema } from './base.schema';
 
 export type WorkspaceDocument = mongoose.HydratedDocument<Workspace>;
 
 export const WORKSPACE_COLLECTION = 'workspaces';
 @Schema({ timestamps: true, collection: WORKSPACE_COLLECTION })
 @ObjectType()
-export class Workspace implements IWorkspace {
+export class Workspace extends BaseSchema implements IWorkspace {
   @Prop()
   @Field()
   name?: string;
