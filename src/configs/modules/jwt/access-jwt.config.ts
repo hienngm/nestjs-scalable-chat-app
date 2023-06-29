@@ -1,6 +1,6 @@
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
-import { EnvConfigService } from '../../env/env.service';
+import { EnvConfigService } from 'src/configs/env/env.service';
 
 @Injectable()
 export class AccessJwtConfig implements JwtOptionsFactory {

@@ -12,9 +12,10 @@ import {
   IPubSubService,
   IPublishChannelMessageParams,
 } from 'src/core/interfaces';
-import { RENEW_AUTH_DATA_STATUS } from './constants';
+import { RENEW_AUTH_DATA_STATUS } from 'src/constants/event.constant';
 import { User } from 'src/frameworks/data-services/mongoose/schemas';
-import { EventFactory, IEvent } from 'src/utils';
+import { EventFactory } from 'src/utils';
+import { IEvent } from 'src/core/interfaces/events';
 
 @Injectable()
 export class GraphQLSubscriptionService implements IPubSubService {
@@ -71,7 +72,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
     });
   }
 
-  subscribeToEvents(subscriber: ISubscriber) {
+  subscribeToEventsTopic(subscriber: ISubscriber) {
     const { id: subscriberId, userId } = subscriber;
     const eventsTopic = this.getEventsTopic(userId);
 

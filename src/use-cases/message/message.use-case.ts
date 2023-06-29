@@ -6,7 +6,7 @@ import {
   PUBSUB_SERVICE_TOKEN,
 } from 'src/core/interfaces';
 import { Message } from 'src/frameworks/data-services/mongoose/schemas';
-import { CreateMessageInput } from './dtos/create-message.dto';
+import { CreateChannelMessageInput } from './dtos/create-message.dto';
 
 @Injectable()
 export class MessageUseCase {
@@ -19,7 +19,7 @@ export class MessageUseCase {
 
   async createOne(params: {
     senderId: string;
-    createMessageInput: CreateMessageInput;
+    createMessageInput: CreateChannelMessageInput;
   }): Promise<Message> {
     const { senderId, createMessageInput } = params;
 

@@ -43,9 +43,18 @@ type Message {
   workspace: Workspace!
 }
 
-type LoginResponseDto {
+type LoginResponse {
   accessToken: String!
   user: User!
+}
+
+type ChannelMessagePayload {
+  message: Message!
+  channelId: String!
+}
+
+type RenewAuthDataPayload {
+  subscriberId: String!
 }
 
 type Query {
@@ -53,8 +62,8 @@ type Query {
 }
 
 type Mutation {
-  login(loginInput: LoginInput!): LoginResponseDto!
-  createMessage(createMessageInput: CreateMessageInput!): Message!
+  login(loginInput: LoginInput!): LoginResponse!
+  createChannelMessage(createMessageInput: CreateChannelMessageInput!): Message!
   renewSubscriberAuthData(subscriberId: String!): String!
 }
 
@@ -63,11 +72,30 @@ input LoginInput {
   password: String!
 }
 
-input CreateMessageInput {
+input CreateChannelMessageInput {
   channelId: String!
   content: String!
 }
 
 type Subscription {
-  events: String!
+  listenToEvents: Event!
+}
+
+union Event = RenewAuthDataEvent | ChannelMessageEvent
+
+type RenewAuthDataEvent {
+  """type: EventTypes.RENEW_AUTH_DATA"""
+  type: EventTypes!
+  payload: RenewAuthDataPayload!
+}
+
+enum EventTypes {
+  RENEW_AUTH_DATA
+  CHANNEL_MESSAGE
+}
+
+type ChannelMessageEvent {
+  """type: EventTypes.CHANNEL_MESSAGE"""
+  type: EventTypes!
+  payload: ChannelMessagePayload!
 }

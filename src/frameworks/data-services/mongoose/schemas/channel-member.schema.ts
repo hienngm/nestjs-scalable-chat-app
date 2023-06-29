@@ -5,11 +5,11 @@ import { USER_COLLECTION, User } from './user.schema';
 import { CHANNEL_COLLECTION, Channel } from './channel.schema';
 import { BaseSchema } from './base.schema';
 
-export type ChannelMemberDocument = mongoose.HydratedDocument<ChannelMember>;
+type ChannelMemberDocument = mongoose.HydratedDocument<ChannelMember>;
 
-export const CHANNEL_MEMBER_COLLECTION = 'channelMembers';
+const CHANNEL_MEMBER_COLLECTION = 'channelMembers';
 @Schema({ timestamps: true, collection: CHANNEL_MEMBER_COLLECTION })
-export class ChannelMember extends BaseSchema implements IChannelMember {
+class ChannelMember extends BaseSchema implements IChannelMember {
   @Prop()
   channelId?: string;
 
@@ -23,4 +23,11 @@ export class ChannelMember extends BaseSchema implements IChannelMember {
   user?: User;
 }
 
-export const ChannelMemberSchema = SchemaFactory.createForClass(ChannelMember);
+const ChannelMemberSchema = SchemaFactory.createForClass(ChannelMember);
+
+export {
+  ChannelMemberDocument,
+  CHANNEL_MEMBER_COLLECTION,
+  ChannelMember,
+  ChannelMemberSchema,
+};

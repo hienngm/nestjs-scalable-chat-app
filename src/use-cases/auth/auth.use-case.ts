@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DATA_SERVICE_TOKEN, IDataService } from 'src/core/interfaces';
-import { LoginInput, LoginResponseDto } from './dtos';
+import { LoginInput, LoginResponse } from './dtos';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/frameworks/data-services/mongoose/schemas';
@@ -13,7 +13,7 @@ export class AuthUseCase {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginInput: LoginInput): Promise<LoginResponseDto> {
+  async login(loginInput: LoginInput): Promise<LoginResponse> {
     const { username, password } = loginInput;
     const user: User | null = await this.dataService.users.findOneByUsername(
       username,

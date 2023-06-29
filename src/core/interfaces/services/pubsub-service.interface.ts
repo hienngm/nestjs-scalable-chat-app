@@ -1,11 +1,13 @@
 import { IMessage } from 'src/core/entities';
 
-export interface IPublishChannelMessageParams {
+interface IPublishChannelMessageParams {
   channelId: string;
   message: IMessage;
 }
 
-export const PUBSUB_SERVICE_TOKEN = Symbol('PUBSUB_SERVICE_TOKEN');
-export interface IPubSubService {
+const PUBSUB_SERVICE_TOKEN = Symbol('PUBSUB_SERVICE_TOKEN');
+interface IPubSubService {
   publishChannelMessage(params: IPublishChannelMessageParams): Promise<void>;
 }
+
+export { IPublishChannelMessageParams, PUBSUB_SERVICE_TOKEN, IPubSubService };

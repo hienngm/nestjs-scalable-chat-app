@@ -4,12 +4,12 @@ import { IUser } from 'src/core/entities';
 import { BaseSchema } from './base.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
 
-export type UserDocument = HydratedDocument<User>;
+type UserDocument = HydratedDocument<User>;
 
-export const USER_COLLECTION = 'users';
+const USER_COLLECTION = 'users';
 @Schema({ timestamps: true, collection: USER_COLLECTION })
 @ObjectType()
-export class User extends BaseSchema implements IUser {
+class User extends BaseSchema implements IUser {
   @Prop()
   @Field()
   username?: string;
@@ -23,4 +23,6 @@ export class User extends BaseSchema implements IUser {
   password?: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+
+export { UserDocument, USER_COLLECTION, User, UserSchema };

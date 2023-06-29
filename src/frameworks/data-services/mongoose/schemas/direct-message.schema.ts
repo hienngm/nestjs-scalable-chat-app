@@ -5,11 +5,11 @@ import { USER_COLLECTION, User } from './user.schema';
 import { WORKSPACE_COLLECTION } from './workspace.schema';
 import { BaseSchema } from './base.schema';
 
-export type DirectMessageDocument = mongoose.HydratedDocument<DirectMessage>;
+type DirectMessageDocument = mongoose.HydratedDocument<DirectMessage>;
 
-export const DIRECT_MESSAGE_COLLECTION = 'directMessages';
+const DIRECT_MESSAGE_COLLECTION = 'directMessages';
 @Schema({ timestamps: true, collection: DIRECT_MESSAGE_COLLECTION })
-export class DirectMessage extends BaseSchema implements IDirectMessage {
+class DirectMessage extends BaseSchema implements IDirectMessage {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: WORKSPACE_COLLECTION })
   workspace?: IWorkspace;
 
@@ -23,4 +23,11 @@ export class DirectMessage extends BaseSchema implements IDirectMessage {
   sender?: User;
 }
 
-export const DirectMessageSchema = SchemaFactory.createForClass(DirectMessage);
+const DirectMessageSchema = SchemaFactory.createForClass(DirectMessage);
+
+export {
+  DirectMessageDocument,
+  DIRECT_MESSAGE_COLLECTION,
+  DirectMessage,
+  DirectMessageSchema,
+};

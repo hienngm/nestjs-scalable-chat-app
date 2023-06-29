@@ -7,12 +7,12 @@ import { CHANNEL_COLLECTION, Channel } from './channel.schema';
 import { WORKSPACE_COLLECTION, Workspace } from './workspace.schema';
 import { BaseSchema } from './base.schema';
 
-export type MessageDocument = mongoose.HydratedDocument<Message>;
+type MessageDocument = mongoose.HydratedDocument<Message>;
 
-export const MESSAGE_COLLECTION = 'messages';
+const MESSAGE_COLLECTION = 'messages';
 @Schema({ timestamps: true, collection: MESSAGE_COLLECTION })
 @ObjectType()
-export class Message extends BaseSchema implements IMessage {
+class Message extends BaseSchema implements IMessage {
   @Prop()
   @Field()
   content?: string;
@@ -30,4 +30,6 @@ export class Message extends BaseSchema implements IMessage {
   workspace?: Workspace;
 }
 
-export const MessageSchema = SchemaFactory.createForClass(Message);
+const MessageSchema = SchemaFactory.createForClass(Message);
+
+export { MessageDocument, MESSAGE_COLLECTION, Message, MessageSchema };

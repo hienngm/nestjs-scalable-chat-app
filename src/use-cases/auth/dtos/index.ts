@@ -1,2 +1,2 @@
 export * from './login-response.dto';
-export * from './login.dto';
+export * from './login-input.dto';

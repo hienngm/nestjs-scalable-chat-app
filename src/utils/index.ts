@@ -1,1 +1,1 @@
-export * from './event-factory';
+export * from './events';

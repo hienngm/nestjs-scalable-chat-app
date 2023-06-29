@@ -5,12 +5,12 @@ import { USER_COLLECTION, User } from './user.schema';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseSchema } from './base.schema';
 
-export type WorkspaceDocument = mongoose.HydratedDocument<Workspace>;
+type WorkspaceDocument = mongoose.HydratedDocument<Workspace>;
 
-export const WORKSPACE_COLLECTION = 'workspaces';
+const WORKSPACE_COLLECTION = 'workspaces';
 @Schema({ timestamps: true, collection: WORKSPACE_COLLECTION })
 @ObjectType()
-export class Workspace extends BaseSchema implements IWorkspace {
+class Workspace extends BaseSchema implements IWorkspace {
   @Prop()
   @Field()
   name?: string;
@@ -20,4 +20,6 @@ export class Workspace extends BaseSchema implements IWorkspace {
   owner?: User;
 }
 
-export const WorkspaceSchema = SchemaFactory.createForClass(Workspace);
+const WorkspaceSchema = SchemaFactory.createForClass(Workspace);
+
+export { WorkspaceDocument, WORKSPACE_COLLECTION, Workspace, WorkspaceSchema };

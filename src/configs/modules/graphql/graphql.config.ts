@@ -44,7 +44,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
     };
   }
 
-  async isValidToken(token: string): Promise<boolean> {
+  private async isValidToken(token: string): Promise<boolean> {
     try {
       await this.jwtService.verifyAsync(token);
       return true;
@@ -53,7 +53,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
     }
   }
 
-  parseToken(token: string): IAuthUser {
+  private parseToken(token: string): IAuthUser {
     return this.jwtService.decode(token) as IAuthUser;
   }
 }

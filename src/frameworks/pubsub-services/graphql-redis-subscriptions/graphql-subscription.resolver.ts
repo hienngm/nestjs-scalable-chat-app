@@ -7,8 +7,8 @@ import {
 } from '@nestjs/graphql';
 import { ISubscriber, IAuthUser } from 'src/common/interfaces';
 import { GraphQLSubscriptionService } from './graphql-subscription.service';
-import { EVENT_TYPES } from './constants';
-import { IEvent } from 'src/utils';
+import { EVENT_TYPES } from 'src/constants';
+import { EventUnion } from './resolve-types';
 
 @Resolver()
 export class SubscriptionResolver {
@@ -27,19 +27,19 @@ export class SubscriptionResolver {
     });
   }
 
-  @Subscription(() => String, {
-    name: 'events',
+  @Subscription(() => EventUnion, {
+    name: 'listenToEvents',
     filter: function (...args) {
       const self = this as SubscriptionResolver;
       return self.eventFilter(...args);
     },
   })
-  async subscribeToEvents(@Context('subscriber') subscriber: ISubscriber) {
-    return this.subscriptionService.subscribeToEvents(subscriber);
+  async subscribeToEventsTopic(@Context('subscriber') subscriber: ISubscriber) {
+    return this.subscriptionService.subscribeToEventsTopic(subscriber);
   }
 
   private async eventFilter(
-    event: IEvent,
+    event: Event,
     _variables: any,
     context: { subscriber: ISubscriber },
   ): Promise<boolean> {
