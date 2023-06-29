@@ -25,4 +25,8 @@ export class UserRepository implements IUserRepository {
       _id: { $in: _.map(channelMembers, 'userId') },
     });
   }
+
+  createOne(data: User): Promise<User> {
+    return this.userModel.create(data);
+  }
 }

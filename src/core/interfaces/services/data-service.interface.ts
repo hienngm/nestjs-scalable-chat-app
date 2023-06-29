@@ -1,14 +1,14 @@
-import {
-  IChannelRepository,
-  IMessageRepository,
-  IUserRepository,
-} from 'src/core/interfaces/repositories';
+import * as IRepositories from 'src/core/interfaces/repositories';
 
 export const DATA_SERVICE_TOKEN = Symbol('DATA_SERVICE_TOKEN');
 export interface IDataService {
-  users: IUserRepository;
+  users: IRepositories.IUserRepository;
 
-  messages: IMessageRepository;
+  messages: IRepositories.IMessageRepository;
 
-  channels: IChannelRepository;
+  channels: IRepositories.IChannelRepository;
+
+  workspaces: IRepositories.IWorkspaceRepository;
+
+  members: IRepositories.IMemberRepository;
 }

@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Channel,
-  ChannelMember,
-  ChannelMemberSchema,
-  ChannelSchema,
-  Message,
-  MessageSchema,
-  User,
-  UserSchema,
-} from './schemas';
+import * as schemas from './schemas';
 import { MongooseConfig } from 'src/configs/modules/mongoose/mongoose.config';
-import { DATA_SERVICE_TOKEN } from 'src/core/interfaces';
+import * as IRepositories from 'src/core/interfaces/repositories';
 import { MongooseDataService } from './mongoose-data-service.service';
 import * as repositories from 'src/frameworks/data-services/mongoose/repositories';
+import { DATA_SERVICE_TOKEN } from 'src/core/interfaces';
 
 @Module({
   imports: [
@@ -21,10 +13,12 @@ import * as repositories from 'src/frameworks/data-services/mongoose/repositorie
       useClass: MongooseConfig,
     }),
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Message.name, schema: MessageSchema },
-      { name: Channel.name, schema: ChannelSchema },
-      { name: ChannelMember.name, schema: ChannelMemberSchema },
+      { name: schemas.User.name, schema: schemas.UserSchema },
+      { name: schemas.Message.name, schema: schemas.MessageSchema },
+      { name: schemas.Member.name, schema: schemas.MemberSchema },
+      { name: schemas.Channel.name, schema: schemas.ChannelSchema },
+      { name: schemas.ChannelMember.name, schema: schemas.ChannelMemberSchema },
+      { name: schemas.Workspace.name, schema: schemas.WorkspaceSchema },
     ]),
   ],
   providers: [
@@ -33,6 +27,26 @@ import * as repositories from 'src/frameworks/data-services/mongoose/repositorie
     {
       provide: DATA_SERVICE_TOKEN,
       useExisting: MongooseDataService,
+    },
+    {
+      provide: IRepositories.USER_REPOSITORY_TOKEN,
+      useExisting: repositories.UserRepository,
+    },
+    {
+      provide: IRepositories.MEMBER_REPOSITORY_TOKEN,
+      useExisting: repositories.MemberRepository,
+    },
+    {
+      provide: IRepositories.CHANNEL_REPOSITORY_TOKEN,
+      useExisting: repositories.ChannelRepository,
+    },
+    {
+      provide: IRepositories.MESSAGE_REPOSITORY_TOKEN,
+      useExisting: repositories.MessageRepository,
+    },
+    {
+      provide: IRepositories.WORKSPACE_REPOSITORY_TOKEN,
+      useExisting: repositories.WorkspaceRepository,
     },
   ],
   exports: [DATA_SERVICE_TOKEN],
