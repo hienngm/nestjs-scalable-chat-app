@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { IChannelMember } from 'src/core/entities';
-import { USER_COLLECTION, User } from './user.schema';
-import { CHANNEL_COLLECTION, Channel } from './channel.schema';
+import { User } from './user.schema';
+import { Channel } from './channel.schema';
 import { BaseSchema } from './base.schema';
 
 type ChannelMemberDocument = mongoose.HydratedDocument<ChannelMember>;
@@ -10,24 +10,19 @@ type ChannelMemberDocument = mongoose.HydratedDocument<ChannelMember>;
 const CHANNEL_MEMBER_COLLECTION = 'channelMembers';
 @Schema({ timestamps: true, collection: CHANNEL_MEMBER_COLLECTION })
 class ChannelMember extends BaseSchema implements IChannelMember {
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
   channelId?: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: CHANNEL_COLLECTION })
+  @Prop({})
   channel?: Channel;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
   userId?: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: USER_COLLECTION })
+  @Prop({})
   user?: User;
 }
 
 const ChannelMemberSchema = SchemaFactory.createForClass(ChannelMember);
 
-export {
-  ChannelMemberDocument,
-  CHANNEL_MEMBER_COLLECTION,
-  ChannelMember,
-  ChannelMemberSchema,
-};
+export { ChannelMemberDocument, ChannelMember, ChannelMemberSchema };

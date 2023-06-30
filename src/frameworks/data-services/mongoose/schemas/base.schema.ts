@@ -1,11 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Prop } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { Schema } from 'mongoose';
+import { IBaseEntity } from 'src/core/entities/base.entity';
 
 @ObjectType()
-export class BaseSchema {
+export class BaseSchema implements IBaseEntity {
   @Field(() => String)
-  _id?: mongoose.Types.ObjectId | string;
+  @Prop({ type: Schema.Types.ObjectId, alias: '_id' })
+  id?: string;
 
   @Prop({ type: Date })
   @Field()

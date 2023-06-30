@@ -1,7 +1,11 @@
-import { IChannel, IUser } from './';
+import { IChannel, IUser, IBaseEntity } from './';
 
-export interface IChannelMember {
+export interface IChannelMember extends IBaseEntity {
+  channelId?: string;
+
   channel?: IChannel;
+
+  userId?: string;
 
   user?: IUser;
 }

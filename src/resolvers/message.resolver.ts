@@ -15,7 +15,7 @@ export class MessageResolver {
     @Args('createMessageInput') createMessageInput: CreateChannelMessageInput,
   ): Promise<Message> {
     return this.messageUseCase.createOne({
-      senderId: user.sub,
+      senderId: user.id,
       createMessageInput,
     });
   }

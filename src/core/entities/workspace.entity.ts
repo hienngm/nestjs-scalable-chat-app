@@ -1,7 +1,5 @@
-import { IUser } from '.';
+import { IBaseEntity } from './';
 
-export interface IWorkspace {
+export interface IWorkspace extends IBaseEntity {
   name?: string;
-
-  owner?: IUser;
 }

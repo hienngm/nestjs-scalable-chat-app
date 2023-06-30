@@ -33,7 +33,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
             return {
               subscriber: {
                 id: crypto.randomUUID(),
-                userId: user.sub,
+                userId: user.id,
                 username: user.username,
                 tokenExpireAt: user.exp,
               },

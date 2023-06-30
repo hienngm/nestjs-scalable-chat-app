@@ -1,7 +1,9 @@
-import { IWorkspace } from '.';
+import { IWorkspace, IBaseEntity } from './';
 
-export interface IChannel {
+export interface IChannel extends IBaseEntity {
   name?: string;
+
+  workplaceId?: string;
 
   workspace?: IWorkspace;
 

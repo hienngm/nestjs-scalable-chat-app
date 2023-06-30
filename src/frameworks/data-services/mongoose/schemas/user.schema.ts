@@ -25,4 +25,4 @@ class User extends BaseSchema implements IUser {
 
 const UserSchema = SchemaFactory.createForClass(User);
 
-export { UserDocument, USER_COLLECTION, User, UserSchema };
+export { UserDocument, User, UserSchema };

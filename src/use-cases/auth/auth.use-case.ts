@@ -38,9 +38,9 @@ export class AuthUseCase {
   }
 
   async generateToken(user: User): Promise<string> {
-    const { _id, username } = user;
+    const { id, username } = user;
     const accessToken = await this.jwtService.signAsync({
-      sub: _id,
+      sub: id,
       username: username,
     });
 

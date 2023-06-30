@@ -1,3 +1,4 @@
+export * from './base.entity';
 export * from './member.entity';
 export * from './workspace.entity';
 export * from './user.entity';

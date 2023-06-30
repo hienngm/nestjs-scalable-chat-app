@@ -12,7 +12,7 @@ export class ChannelRepository implements IChannelRepository {
   ) {}
 
   async findOneById(id: string): Promise<Channel | null> {
-    return this.channelModel.findOne({ _id: id });
+    return this.channelModel.findOne({ id });
   }
 
   createOne(data: Channel): Promise<Channel> {

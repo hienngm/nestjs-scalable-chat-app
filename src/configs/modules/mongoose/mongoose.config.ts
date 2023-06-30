@@ -4,6 +4,7 @@ import {
   MongooseModuleOptions,
 } from '@nestjs/mongoose';
 import { EnvConfigService } from 'src/configs/env/env.service';
+import { Schema } from 'mongoose';
 
 @Injectable()
 export class MongooseConfig implements MongooseOptionsFactory {
@@ -13,3 +14,6 @@ export class MongooseConfig implements MongooseOptionsFactory {
     return { uri: this.envConfigService.getMongoDBConnectionString() };
   }
 }
+
+// Mongoose config
+Schema.Types.ObjectId.get((v) => v.toString());

@@ -38,7 +38,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
     await Promise.all(
       users.map((user) =>
         this.publishEventToUser({
-          userId: String(user._id),
+          userId: String(user.id),
           event: EventFactory.createChannelMessageEvent({
             channelId,
             message,
@@ -50,7 +50,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
 
   renewSubscriberAuthData(params: { user: IAuthUser; subscriberId: string }) {
     const { user, subscriberId } = params;
-    const { sub: userId } = user;
+    const { id: userId } = user;
     const subscriberAuthData = this.subscribersAuthDatas.get(subscriberId);
 
     if (!subscriberAuthData) {

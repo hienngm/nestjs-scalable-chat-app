@@ -22,7 +22,7 @@ export class UserRepository implements IUserRepository {
   async findByChannelId(channelId: string): Promise<User[]> {
     const channelMembers = await this.channelMemberModel.find({ channelId });
     return this.userModel.find({
-      _id: { $in: _.map(channelMembers, 'userId') },
+      id: { $in: _.map(channelMembers, 'userId') },
     });
   }
 

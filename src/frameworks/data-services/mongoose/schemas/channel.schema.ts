@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
 import * as mongoose from 'mongoose';
 import { IChannel } from 'src/core/entities';
-import { WORKSPACE_COLLECTION, Workspace } from './workspace.schema';
+import { Workspace } from './workspace.schema';
 import { BaseSchema } from './base.schema';
 
 type ChannelDocument = mongoose.HydratedDocument<Channel>;
@@ -15,7 +15,11 @@ class Channel extends BaseSchema implements IChannel {
   @Field()
   name?: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: WORKSPACE_COLLECTION })
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  @Field(() => String)
+  workspaceId?: string;
+
+  @Prop({})
   @Field()
   workspace?: Workspace;
 
@@ -26,4 +30,4 @@ class Channel extends BaseSchema implements IChannel {
 
 const ChannelSchema = SchemaFactory.createForClass(Channel);
 
-export { ChannelDocument, CHANNEL_COLLECTION, Channel, ChannelSchema };
+export { ChannelDocument, Channel, ChannelSchema };

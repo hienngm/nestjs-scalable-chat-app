@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { IAuthUser } from 'src/common/interfaces';
 import { EnvConfigService } from 'src/configs/env/env.service';
 import { NODE_ENV } from 'src/constants';
 
@@ -16,7 +17,11 @@ export class AccessJwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  public validate(payload: any) {
-    return payload;
+  public validate(payload: any): IAuthUser {
+    return {
+      id: payload.sub,
+      username: payload.username,
+      exp: payload.exp,
+    };
   }
 }
