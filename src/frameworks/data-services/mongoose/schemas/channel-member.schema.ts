@@ -3,12 +3,12 @@ import * as mongoose from 'mongoose';
 import { IChannelMember } from 'src/core/entities';
 import { User } from './user.schema';
 import { Channel } from './channel.schema';
-import { BaseSchema } from './base.schema';
+import { BaseSchema, baseSchemaOptions } from './base.schema';
 
 type ChannelMemberDocument = mongoose.HydratedDocument<ChannelMember>;
 
 const CHANNEL_MEMBER_COLLECTION = 'channelMembers';
-@Schema({ timestamps: true, collection: CHANNEL_MEMBER_COLLECTION })
+@Schema({ ...baseSchemaOptions, collection: CHANNEL_MEMBER_COLLECTION })
 class ChannelMember extends BaseSchema implements IChannelMember {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   channelId?: string;

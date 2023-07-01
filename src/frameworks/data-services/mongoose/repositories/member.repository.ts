@@ -4,15 +4,17 @@ import { Model } from 'mongoose';
 
 import { IMemberRepository } from 'src/core/interfaces';
 import { Member } from '../schemas';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class MemberRepository implements IMemberRepository {
+export class MemberRepository
+  extends BaseRepository<Member>
+  implements IMemberRepository
+{
   constructor(
     @InjectModel(Member.name)
-    private readonly memberModel: Model<Member>,
-  ) {}
-
-  createOne(data: Member): Promise<Member> {
-    return this.memberModel.create(data);
+    readonly memberModel: Model<Member>,
+  ) {
+    super(memberModel);
   }
 }

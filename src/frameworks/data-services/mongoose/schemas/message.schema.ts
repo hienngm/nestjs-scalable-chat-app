@@ -4,12 +4,12 @@ import * as mongoose from 'mongoose';
 import { IMessage } from 'src/core/entities';
 import { User } from './user.schema';
 import { Channel } from './channel.schema';
-import { BaseSchema } from './base.schema';
+import { BaseSchema, baseSchemaOptions } from './base.schema';
 
 type MessageDocument = mongoose.HydratedDocument<Message>;
 
 const MESSAGE_COLLECTION = 'messages';
-@Schema({ timestamps: true, collection: MESSAGE_COLLECTION })
+@Schema({ ...baseSchemaOptions, collection: MESSAGE_COLLECTION })
 @ObjectType()
 class Message extends BaseSchema implements IMessage {
   @Prop()

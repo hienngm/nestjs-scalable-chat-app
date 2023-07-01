@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { ICreateMessageParams, IMessageRepository } from 'src/core/interfaces';
+import { IMessageRepository } from 'src/core/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from '../schemas';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class MessageRepository implements IMessageRepository {
+export class MessageRepository
+  extends BaseRepository<Message>
+  implements IMessageRepository
+{
   constructor(
     @InjectModel(Message.name)
-    private readonly messageModel: Model<Message>,
-  ) {}
-
-  createOne(params: ICreateMessageParams): Promise<Message> {
-    return this.messageModel.create(params);
+    readonly messageModel: Model<Message>,
+  ) {
+    super(messageModel);
   }
 }

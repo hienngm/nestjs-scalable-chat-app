@@ -1,10 +1,7 @@
 import { IChannel } from 'src/core/entities';
+import { IBaseRepository } from './base.repository';
 
 const CHANNEL_REPOSITORY_TOKEN = Symbol('CHANNEL_REPOSITORY_TOKEN');
-interface IChannelRepository {
-  findOneById: (id: string) => Promise<IChannel | null>;
-
-  createOne(data: IChannel): Promise<IChannel>;
-}
+interface IChannelRepository extends IBaseRepository<IChannel> {}
 
 export { CHANNEL_REPOSITORY_TOKEN, IChannelRepository };

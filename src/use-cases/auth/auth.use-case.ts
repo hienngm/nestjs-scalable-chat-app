@@ -15,9 +15,7 @@ export class AuthUseCase {
 
   async login(loginInput: LoginInput): Promise<LoginResponse> {
     const { username, password } = loginInput;
-    const user: User | null = await this.dataService.users.findOneByUsername(
-      username,
-    );
+    const user = await this.dataService.users.findOneByUsername(username);
 
     if (!user) {
       throw new BadRequestException('Invalid username or password');

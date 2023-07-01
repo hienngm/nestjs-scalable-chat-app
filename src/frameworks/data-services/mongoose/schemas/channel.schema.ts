@@ -3,12 +3,12 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import * as mongoose from 'mongoose';
 import { IChannel } from 'src/core/entities';
 import { Workspace } from './workspace.schema';
-import { BaseSchema } from './base.schema';
+import { BaseSchema, baseSchemaOptions } from './base.schema';
 
 type ChannelDocument = mongoose.HydratedDocument<Channel>;
 
 const CHANNEL_COLLECTION = 'channels';
-@Schema({ timestamps: true, collection: CHANNEL_COLLECTION })
+@Schema({ ...baseSchemaOptions, collection: CHANNEL_COLLECTION })
 @ObjectType()
 class Channel extends BaseSchema implements IChannel {
   @Prop()

@@ -4,15 +4,17 @@ import { Model } from 'mongoose';
 
 import { IWorkspaceRepository } from 'src/core/interfaces';
 import { Workspace } from '../schemas';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class WorkspaceRepository implements IWorkspaceRepository {
+export class WorkspaceRepository
+  extends BaseRepository<Workspace>
+  implements IWorkspaceRepository
+{
   constructor(
     @InjectModel(Workspace.name)
-    private readonly workspaceModel: Model<Workspace>,
-  ) {}
-
-  createOne(data: Workspace): Promise<Workspace> {
-    return this.workspaceModel.create(data);
+    readonly workspaceModel: Model<Workspace>,
+  ) {
+    super(workspaceModel);
   }
 }

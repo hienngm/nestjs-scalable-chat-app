@@ -5,15 +5,21 @@ import _ from 'lodash';
 
 import { IUserRepository } from 'src/core/interfaces';
 import { ChannelMember, User } from '../schemas';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UserRepository
+  extends BaseRepository<User>
+  implements IUserRepository
+{
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
     @InjectModel(ChannelMember.name)
     private readonly channelMemberModel: Model<ChannelMember>,
-  ) {}
+  ) {
+    super(userModel);
+  }
 
   async findOneByUsername(username: string): Promise<User | null> {
     return this.userModel.findOne({ username });
@@ -24,9 +30,5 @@ export class UserRepository implements IUserRepository {
     return this.userModel.find({
       id: { $in: _.map(channelMembers, 'userId') },
     });
-  }
-
-  createOne(data: User): Promise<User> {
-    return this.userModel.create(data);
   }
 }

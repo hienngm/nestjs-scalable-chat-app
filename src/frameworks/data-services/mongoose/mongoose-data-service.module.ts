@@ -48,6 +48,10 @@ import { DATA_SERVICE_TOKEN } from 'src/core/interfaces';
       provide: IRepositories.WORKSPACE_REPOSITORY_TOKEN,
       useExisting: repositories.WorkspaceRepository,
     },
+    {
+      provide: IRepositories.CHANNEL_MEMBER_REPOSITORY_TOKEN,
+      useExisting: repositories.ChannelMemberRepository,
+    },
   ],
   exports: [DATA_SERVICE_TOKEN],
 })

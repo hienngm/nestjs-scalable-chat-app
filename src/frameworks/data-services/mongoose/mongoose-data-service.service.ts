@@ -19,5 +19,8 @@ export class MongooseDataService implements IDataService {
 
     @Inject(IRepositories.WORKSPACE_REPOSITORY_TOKEN)
     public readonly workspaces: IRepositories.IWorkspaceRepository,
+
+    @Inject(IRepositories.CHANNEL_MEMBER_REPOSITORY_TOKEN)
+    public readonly channelMembers: IRepositories.IChannelMemberRepository,
   ) {}
 }

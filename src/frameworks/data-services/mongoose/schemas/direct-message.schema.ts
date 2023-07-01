@@ -3,13 +3,13 @@ import * as mongoose from 'mongoose';
 import { IDirectMessage } from 'src/core/entities';
 import { User } from './user.schema';
 import { Workspace } from './workspace.schema';
-import { BaseSchema } from './base.schema';
+import { BaseSchema, baseSchemaOptions } from './base.schema';
 import { Field } from '@nestjs/graphql';
 
 type DirectMessageDocument = mongoose.HydratedDocument<DirectMessage>;
 
 const DIRECT_MESSAGE_COLLECTION = 'directMessages';
-@Schema({ timestamps: true, collection: DIRECT_MESSAGE_COLLECTION })
+@Schema({ ...baseSchemaOptions, collection: DIRECT_MESSAGE_COLLECTION })
 class DirectMessage extends BaseSchema implements IDirectMessage {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   @Field(() => String)

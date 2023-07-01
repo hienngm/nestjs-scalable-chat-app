@@ -11,4 +11,6 @@ export interface IDataService {
   workspaces: IRepositories.IWorkspaceRepository;
 
   members: IRepositories.IMemberRepository;
+
+  channelMembers: IRepositories.IChannelMemberRepository;
 }

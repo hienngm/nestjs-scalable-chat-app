@@ -3,7 +3,7 @@ import { IWorkspace, IBaseEntity } from './';
 export interface IChannel extends IBaseEntity {
   name?: string;
 
-  workplaceId?: string;
+  workspaceId?: string;
 
   workspace?: IWorkspace;
 

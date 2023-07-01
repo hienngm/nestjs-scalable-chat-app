@@ -4,12 +4,12 @@ import { Field } from '@nestjs/graphql';
 import { IMember } from 'src/core/entities';
 import { User } from './user.schema';
 import { Workspace } from './workspace.schema';
-import { BaseSchema } from './base.schema';
+import { BaseSchema, baseSchemaOptions } from './base.schema';
 
 type MemberDocument = mongoose.HydratedDocument<Member>;
 
 const MEMBER_COLLECTION = 'members';
-@Schema({ timestamps: true, collection: MEMBER_COLLECTION })
+@Schema({ ...baseSchemaOptions, collection: MEMBER_COLLECTION })
 class Member extends BaseSchema implements IMember {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   @Field(() => String)

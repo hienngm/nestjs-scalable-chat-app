@@ -31,9 +31,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
     params: IPublishChannelMessageParams,
   ): Promise<void> {
     const { channelId, message } = params;
-    const users: User[] = await this.dataService.users.findByChannelId(
-      channelId,
-    );
+    const users = await this.dataService.users.findByChannelId(channelId);
 
     await Promise.all(
       users.map((user) =>
