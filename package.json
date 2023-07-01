@@ -18,9 +18,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "create-testing-data": "npm run build && node dist/scripts/create-testing-data.js",
     "dc": "docker-compose --env-file .env -f docker/docker-compose.yml -p scalable-chat-app",
-    "dc-db-init": "yarn dc exec backend yarn db-init",
-    "dc-clean": "yarn dc down -v --remove-orphans && docker image prune -f && docker builder prune -f -a"
+    "dc-db-init": "npm run dc exec backend npm run create-testing-data",
+    "dc-clean": "npm run dc down -v --remove-orphans && docker image prune -f && docker builder prune -f -a"
   },
   "dependencies": {
     "@nestjs/apollo": "^12.0.1",
