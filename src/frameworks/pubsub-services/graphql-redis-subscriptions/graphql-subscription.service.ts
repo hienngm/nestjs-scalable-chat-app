@@ -11,9 +11,9 @@ import {
   IDataService,
   IPubSubService,
   IPublishChannelMessageParams,
+  IPublishDirectMessageParams,
 } from 'src/core/interfaces';
 import { RENEW_AUTH_DATA_STATUS } from 'src/constants/event.constant';
-import { User } from 'src/frameworks/data-services/mongoose/schemas';
 import { EventFactory } from 'src/utils';
 import { IEvent } from 'src/core/interfaces/events';
 
@@ -27,7 +27,20 @@ export class GraphQLSubscriptionService implements IPubSubService {
     private readonly dataService: IDataService,
   ) {}
 
-  async publishChannelMessage(
+  async publishDirectMessageEvent(
+    params: IPublishDirectMessageParams,
+  ): Promise<void> {
+    const { message } = params;
+
+    await this.publishEventToUser({
+      userId: message.receiverId,
+      event: EventFactory.createDirectMessageEvent({
+        message,
+      }),
+    });
+  }
+
+  async publishChannelMessageEvent(
     params: IPublishChannelMessageParams,
   ): Promise<void> {
     const { channelId, message } = params;
@@ -36,7 +49,7 @@ export class GraphQLSubscriptionService implements IPubSubService {
     await Promise.all(
       users.map((user) =>
         this.publishEventToUser({
-          userId: String(user.id),
+          userId: user.id,
           event: EventFactory.createChannelMessageEvent({
             channelId,
             message,
@@ -68,22 +81,33 @@ export class GraphQLSubscriptionService implements IPubSubService {
     this.pubSub.publish(authTopic, {
       renewAuthDataStatus: RENEW_AUTH_DATA_STATUS.SUCCESS,
     });
+
+    return RENEW_AUTH_DATA_STATUS.SUCCESS;
   }
 
-  subscribeToEventsTopic(subscriber: ISubscriber) {
+  subscribeToEventTopic(subscriber: ISubscriber) {
     const { id: subscriberId, userId } = subscriber;
-    const eventsTopic = this.getEventsTopic(userId);
 
     this.subscribersAuthDatas.set(subscriberId, subscriber);
+    subscriber.onDisconnect = () => this.onDisconnect(subscriberId);
 
-    return this.pubSub.asyncIterator(eventsTopic);
+    const eventTopic = this.getEventTopic(userId);
+    return this.pubSub.asyncIterator(eventTopic);
+  }
+
+  subscribeToAuthEvent(subscriber: ISubscriber) {
+    const { userId } = subscriber;
+
+    const eventTopic = this.getEventTopic(userId);
+    return this.pubSub.asyncIterator(eventTopic);
   }
 
   async publishEventToUser(params: { userId: string; event: IEvent }) {
     const { userId, event } = params;
 
-    const eventTopic = this.getEventsTopic(userId);
-    this.pubSub.publish(eventTopic, event);
+    const eventTopic = this.getEventTopic(userId);
+
+    return this.pubSub.publish(eventTopic, event);
   }
 
   async shouldPublishEventToSubscriber(params: {
@@ -114,13 +138,13 @@ export class GraphQLSubscriptionService implements IPubSubService {
       return false;
     }
 
-    const now = Number(new Date());
+    const now = Math.floor(Date.now() / 1000);
     const { tokenExpireAt } = authData;
     return tokenExpireAt >= now;
   }
 
-  getEventsTopic(userId: string) {
-    return `events:${userId}`;
+  getEventTopic(userId: string) {
+    return `event:${userId}`;
   }
 
   getAuthTopic(subscriberId: string) {
@@ -148,11 +172,12 @@ export class GraphQLSubscriptionService implements IPubSubService {
         throw new Error('Auth data not found');
       }
 
-      const eventsTopic = this.getEventsTopic(authData.userId);
+      const eventTopic = this.getEventTopic(authData.userId);
       const renewAuthDataEvent = EventFactory.createRenewAuthDataEvent({
         subscriberId,
       });
-      await this.pubSub.publish(eventsTopic, renewAuthDataEvent);
+
+      await this.pubSub.publish(eventTopic, renewAuthDataEvent);
 
       const unsubscribe = () => {
         if (!hasUnsubscribed) {
@@ -164,5 +189,9 @@ export class GraphQLSubscriptionService implements IPubSubService {
       // Unsubscribe auth topic if subscriber can't renew auth data after 30s
       setTimeout(unsubscribe, 30000);
     });
+  }
+
+  onDisconnect(subscriberId: string) {
+    this.subscribersAuthDatas.delete(subscriberId);
   }
 }

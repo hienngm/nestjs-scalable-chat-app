@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import _ from 'lodash';
+import * as _ from 'lodash';
 
 import { IUserRepository } from 'src/core/interfaces';
 import { ChannelMember, User } from '../schemas';

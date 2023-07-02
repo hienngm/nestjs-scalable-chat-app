@@ -21,7 +21,6 @@ class Message extends BaseSchema implements IMessage {
   senderId?: string;
 
   @Prop({})
-  @Field()
   sender?: User;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId })
@@ -29,7 +28,6 @@ class Message extends BaseSchema implements IMessage {
   channelId?: string;
 
   @Prop({})
-  @Field()
   channel?: Channel;
 }
 

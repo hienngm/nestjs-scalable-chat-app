@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   DATA_SERVICE_TOKEN,
   IDataService,
@@ -22,6 +22,17 @@ export class MessageUseCase {
     createMessageInput: CreateChannelMessageInput;
   }): Promise<Message> {
     const { senderId, createMessageInput } = params;
+    const { channelId } = createMessageInput;
+
+    const isChannelMember =
+      await this.dataService.channelMembers.isChannelMember({
+        userId: senderId,
+        channelId,
+      });
+
+    if (!isChannelMember) {
+      throw new BadRequestException('Channel is not valid');
+    }
 
     const message = await this.dataService.messages.createOne({
       senderId,
@@ -29,7 +40,7 @@ export class MessageUseCase {
     });
 
     this.pubSubService
-      .publishChannelMessage({
+      .publishChannelMessageEvent({
         channelId: createMessageInput.channelId,
         message,
       })

@@ -4,23 +4,23 @@ import { IDirectMessage } from 'src/core/entities';
 import { User } from './user.schema';
 import { Workspace } from './workspace.schema';
 import { BaseSchema, baseSchemaOptions } from './base.schema';
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 type DirectMessageDocument = mongoose.HydratedDocument<DirectMessage>;
 
 const DIRECT_MESSAGE_COLLECTION = 'directMessages';
 @Schema({ ...baseSchemaOptions, collection: DIRECT_MESSAGE_COLLECTION })
+@ObjectType()
 class DirectMessage extends BaseSchema implements IDirectMessage {
   @Prop({ type: mongoose.Schema.Types.ObjectId })
   @Field(() => String)
   workspaceId?: string;
 
   @Prop({})
-  @Field()
   workspace?: Workspace;
 
   @Prop()
-  @Field()
+  @Field(() => String)
   content?: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId })
@@ -28,7 +28,6 @@ class DirectMessage extends BaseSchema implements IDirectMessage {
   receiverId?: string;
 
   @Prop({})
-  @Field()
   receiver?: User;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId })
@@ -36,7 +35,6 @@ class DirectMessage extends BaseSchema implements IDirectMessage {
   senderId?: string;
 
   @Prop({})
-  @Field()
   sender?: User;
 }
 

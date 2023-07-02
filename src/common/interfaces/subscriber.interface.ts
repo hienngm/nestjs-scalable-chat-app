@@ -3,4 +3,5 @@ export interface ISubscriber {
   userId: string;
   username: string;
   tokenExpireAt: number;
+  onDisconnect?: () => any;
 }

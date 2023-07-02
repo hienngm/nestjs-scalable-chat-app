@@ -1,6 +1,7 @@
 import { createUnionType, registerEnumType } from '@nestjs/graphql';
 import { EVENT_TYPES } from 'src/constants';
-import { RenewAuthDataEvent, ChannelMessageEvent } from './events';
+import { IEvent } from 'src/core/interfaces/events';
+import { ChannelMessageEvent, DirectMessageEvent } from './events';
 
 registerEnumType(EVENT_TYPES, {
   name: 'EventTypes',
@@ -8,7 +9,19 @@ registerEnumType(EVENT_TYPES, {
 
 const EventUnion = createUnionType({
   name: 'Event',
-  types: () => [RenewAuthDataEvent, ChannelMessageEvent] as const,
+  types: () => [DirectMessageEvent, ChannelMessageEvent] as const,
+  resolveType(event: IEvent) {
+    switch (event.type) {
+      case EVENT_TYPES.DIRECT_MESSAGE:
+        return DirectMessageEvent;
+
+      case EVENT_TYPES.CHANNEL_MESSAGE:
+        return ChannelMessageEvent;
+
+      default:
+        return null;
+    }
+  },
 });
 
 export { EventUnion };

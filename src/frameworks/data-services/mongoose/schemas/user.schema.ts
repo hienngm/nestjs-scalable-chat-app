@@ -19,7 +19,6 @@ class User extends BaseSchema implements IUser {
   email?: string;
 
   @Prop()
-  @Field()
   password?: string;
 }
 

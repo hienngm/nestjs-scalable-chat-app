@@ -8,7 +8,6 @@ type User {
   updatedAt: DateTime!
   username: String!
   email: String!
-  password: String!
 }
 
 """
@@ -23,25 +22,23 @@ type Workspace {
   name: String!
 }
 
-type Channel {
-  id: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  name: String!
-  workspaceId: String!
-  workspace: Workspace!
-  isPublic: Boolean!
-}
-
 type Message {
   id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   content: String!
   senderId: String!
-  sender: User!
   channelId: String!
-  channel: Channel!
+}
+
+type DirectMessage {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  workspaceId: String!
+  content: String!
+  receiverId: String!
+  senderId: String!
 }
 
 type LoginResponse {
@@ -56,6 +53,22 @@ type ChannelMessagePayload {
 
 type RenewAuthDataPayload {
   subscriberId: String!
+}
+
+type RenewAuthDataEvent {
+  """type: EventTypes.RENEW_AUTH_DATA"""
+  type: EventTypes!
+  payload: RenewAuthDataPayload!
+}
+
+enum EventTypes {
+  RENEW_AUTH_DATA
+  CHANNEL_MESSAGE
+  DIRECT_MESSAGE
+}
+
+type DirectMessagePayload {
+  message: DirectMessage!
 }
 
 type Query {
@@ -79,20 +92,16 @@ input CreateChannelMessageInput {
 }
 
 type Subscription {
-  listenToEvents: Event!
+  event: Event!
+  authEvent: RenewAuthDataEvent!
 }
 
-union Event = RenewAuthDataEvent | ChannelMessageEvent
+union Event = DirectMessageEvent | ChannelMessageEvent
 
-type RenewAuthDataEvent {
-  """type: EventTypes.RENEW_AUTH_DATA"""
+type DirectMessageEvent {
+  """type: EventTypes.DIRECT_MESSAGE"""
   type: EventTypes!
-  payload: RenewAuthDataPayload!
-}
-
-enum EventTypes {
-  RENEW_AUTH_DATA
-  CHANNEL_MESSAGE
+  payload: DirectMessagePayload!
 }
 
 type ChannelMessageEvent {

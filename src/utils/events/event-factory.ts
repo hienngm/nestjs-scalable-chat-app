@@ -2,6 +2,8 @@ import { EVENT_TYPES } from 'src/constants';
 import {
   IChannelMessageEvent,
   IChannelMessagePayload,
+  IDirectMessageEvent,
+  IDirectMessagePayload,
   IRenewAuthDataEvent,
   IRenewAuthDataPayload,
 } from 'src/core/interfaces/events';
@@ -21,6 +23,15 @@ export class EventFactory {
   ): IChannelMessageEvent {
     return {
       type: EVENT_TYPES.CHANNEL_MESSAGE,
+      payload,
+    };
+  }
+
+  static createDirectMessageEvent(
+    payload: IDirectMessagePayload,
+  ): IDirectMessageEvent {
+    return {
+      type: EVENT_TYPES.DIRECT_MESSAGE,
       payload,
     };
   }

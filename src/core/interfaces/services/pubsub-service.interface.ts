@@ -1,13 +1,26 @@
-import { IMessage } from 'src/core/entities';
+import { IDirectMessage, IMessage } from 'src/core/entities';
 
 interface IPublishChannelMessageParams {
   channelId: string;
   message: IMessage;
 }
 
-const PUBSUB_SERVICE_TOKEN = Symbol('PUBSUB_SERVICE_TOKEN');
-interface IPubSubService {
-  publishChannelMessage(params: IPublishChannelMessageParams): Promise<void>;
+interface IPublishDirectMessageParams {
+  message: IDirectMessage;
 }
 
-export { IPublishChannelMessageParams, PUBSUB_SERVICE_TOKEN, IPubSubService };
+const PUBSUB_SERVICE_TOKEN = Symbol('PUBSUB_SERVICE_TOKEN');
+interface IPubSubService {
+  publishChannelMessageEvent(
+    params: IPublishChannelMessageParams,
+  ): Promise<void>;
+
+  publishDirectMessageEvent(params: IPublishDirectMessageParams): Promise<void>;
+}
+
+export {
+  PUBSUB_SERVICE_TOKEN,
+  IPublishChannelMessageParams,
+  IPubSubService,
+  IPublishDirectMessageParams,
+};
