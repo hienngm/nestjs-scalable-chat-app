@@ -1,4 +1,4 @@
-FROM node:18.13.0-alpine AS development
+FROM node:16.15.1-bullseye AS development
 
 WORKDIR /usr/src/app
 COPY package.json ./
@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm run build
 
-CMD npm install && npm run start:debug
+CMD npm run start:prod

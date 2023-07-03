@@ -43,7 +43,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "127017:27017"
+      - "27017:27017"
     volumes:
       - scalable-chat-app-mongodata:/data/db
 
@@ -55,7 +55,7 @@ services:
     expose:
       - '6379'
     ports:
-      - "16379:6379"
+      - "6379:6379"
     volumes:
       - scalable-chat-app-redisdata:/data
 
