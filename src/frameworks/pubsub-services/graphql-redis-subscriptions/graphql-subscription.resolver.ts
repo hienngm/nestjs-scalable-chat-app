@@ -85,7 +85,6 @@ export class SubscriptionResolver {
     if (event.type === EVENT_TYPES.RENEW_AUTH_DATA) {
       return true;
     }
-
     return false;
   }
 }

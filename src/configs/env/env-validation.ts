@@ -1,5 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { IsEnum, IsString, validateSync } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, validateSync } from 'class-validator';
 import { NODE_ENV } from 'src/constants';
 
 class Env {
@@ -9,20 +9,30 @@ class Env {
 
   // JWT
   @IsString()
+  @IsNotEmpty()
   ACCESS_JWT_SECRET: string;
 
   @IsString()
+  @IsNotEmpty()
   ACCESS_JWT_EXPIRATION_TIME: string;
 
   @IsString()
+  @IsNotEmpty()
   REFRESH_JWT_SECRET: string;
 
   @IsString()
+  @IsNotEmpty()
   REFRESH_JWT_EXPIRATION_TIME: string;
 
   // DATABASE
   @IsString()
+  @IsNotEmpty()
   MONGODB_CONNECTION_STRING: string;
+
+  // REDIS
+  @IsString()
+  @IsNotEmpty()
+  REDIS_CONNECTION_STRING: string;
 }
 
 export function validate(config: Record<string, unknown>) {

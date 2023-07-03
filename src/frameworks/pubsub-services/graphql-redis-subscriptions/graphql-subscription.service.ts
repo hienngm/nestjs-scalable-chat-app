@@ -17,14 +17,17 @@ import { RENEW_AUTH_DATA_STATUS } from 'src/constants/event.constant';
 import { EventFactory } from 'src/utils';
 import { IEvent } from 'src/core/interfaces/events';
 
+const PUB_SUB_TOKEN = Symbol('PUB_SUB_TOKEN');
+
 @Injectable()
-export class GraphQLSubscriptionService implements IPubSubService {
+class GraphQLSubscriptionService implements IPubSubService {
   private readonly subscribersAuthDatas = new Map<string, ISubscriber>();
-  private readonly pubSub: PubSub = new PubSub();
 
   constructor(
     @Inject(DATA_SERVICE_TOKEN)
     private readonly dataService: IDataService,
+    @Inject(PUB_SUB_TOKEN)
+    private readonly pubSub: PubSub,
   ) {}
 
   async publishDirectMessageEvent(
@@ -195,3 +198,5 @@ export class GraphQLSubscriptionService implements IPubSubService {
     this.subscribersAuthDatas.delete(subscriberId);
   }
 }
+
+export { PUB_SUB_TOKEN, GraphQLSubscriptionService };

@@ -14,7 +14,7 @@ export class GraphQLConfig implements GqlOptionsFactory {
 
   createGqlOptions(): ApolloDriverConfig {
     return {
-      autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
+      autoSchemaFile: join(process.cwd(), 'src/graphql-schemas/schema.gql'),
       subscriptions: {
         'graphql-ws': {
           path: '/subscriptions',

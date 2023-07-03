@@ -28,4 +28,8 @@ export class EnvConfigService {
   getMongoDBConnectionString(): string {
     return this.configService.get<string>('MONGODB_CONNECTION_STRING');
   }
+
+  getRedisConnectionString(): string {
+    return this.configService.get<string>('REDIS_CONNECTION_STRING');
+  }
 }
