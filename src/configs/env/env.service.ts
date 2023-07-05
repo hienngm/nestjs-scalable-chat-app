@@ -32,4 +32,8 @@ export class EnvConfigService {
   getRedisConnectionString(): string {
     return this.configService.get<string>('REDIS_CONNECTION_STRING');
   }
+
+  getPubSubServiceProvider(): string {
+    return this.configService.get<string>('PUBSUB_SERVICE_PROVIDER');
+  }
 }

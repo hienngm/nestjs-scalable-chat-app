@@ -30,19 +30,6 @@ class GraphQLSubscriptionService implements IPubSubService {
     private readonly pubSub: PubSub,
   ) {}
 
-  async publishDirectMessageEvent(
-    params: IPublishDirectMessageParams,
-  ): Promise<void> {
-    const { message } = params;
-
-    await this.publishEventToUser({
-      userId: message.receiverId,
-      event: EventFactory.createDirectMessageEvent({
-        message,
-      }),
-    });
-  }
-
   async publishChannelMessageEvent(
     params: IPublishChannelMessageParams,
   ): Promise<void> {
@@ -62,6 +49,19 @@ class GraphQLSubscriptionService implements IPubSubService {
     );
   }
 
+  async publishDirectMessageEvent(
+    params: IPublishDirectMessageParams,
+  ): Promise<void> {
+    const { message } = params;
+
+    await this.publishEventToUser({
+      userId: message.receiverId,
+      event: EventFactory.createDirectMessageEvent({
+        message,
+      }),
+    });
+  }
+
   renewSubscriberAuthData(params: { user: IAuthUser; subscriberId: string }) {
     const { user, subscriberId } = params;
     const { id: userId } = user;
@@ -75,10 +75,7 @@ class GraphQLSubscriptionService implements IPubSubService {
       throw new BadRequestException('Invalid subscriberId');
     }
 
-    this.subscribersAuthDatas.set(subscriberId, {
-      ...subscriberAuthData,
-      tokenExpireAt: user.exp,
-    });
+    this.renewAuthData({ subscriber: subscriberAuthData, user });
 
     const authTopic = this.getAuthTopic(subscriberId);
     this.pubSub.publish(authTopic, {
@@ -105,7 +102,15 @@ class GraphQLSubscriptionService implements IPubSubService {
     return this.pubSub.asyncIterator(eventTopic);
   }
 
-  async publishEventToUser(params: { userId: string; event: IEvent }) {
+  private renewAuthData(params: { subscriber: ISubscriber; user: IAuthUser }) {
+    const { subscriber, user } = params;
+    this.subscribersAuthDatas.set(subscriber.id, {
+      ...subscriber,
+      tokenExpireAt: user.exp,
+    });
+  }
+
+  private async publishEventToUser(params: { userId: string; event: IEvent }) {
     const { userId, event } = params;
 
     const eventTopic = this.getEventTopic(userId);
@@ -135,26 +140,26 @@ class GraphQLSubscriptionService implements IPubSubService {
     return true;
   }
 
-  checkAuthDataValid(subscriberId: string): boolean {
+  private checkAuthDataValid(subscriberId: string): boolean {
     const authData = this.subscribersAuthDatas.get(subscriberId);
     if (!authData) {
       return false;
     }
 
-    const now = Math.floor(Date.now() / 1000);
     const { tokenExpireAt } = authData;
+    const now = Math.floor(Date.now() / 1000);
     return tokenExpireAt >= now;
   }
 
-  getEventTopic(userId: string) {
+  private getEventTopic(userId: string) {
     return `event:${userId}`;
   }
 
-  getAuthTopic(subscriberId: string) {
+  private getAuthTopic(subscriberId: string) {
     return `auth:${subscriberId}`;
   }
 
-  async canRenewAuthData(subscriberId: string): Promise<boolean> {
+  private async canRenewAuthData(subscriberId: string): Promise<boolean> {
     let hasUnsubscribed = false;
 
     return new Promise<boolean>(async (resolve) => {
@@ -172,7 +177,7 @@ class GraphQLSubscriptionService implements IPubSubService {
 
       const authData = this.subscribersAuthDatas.get(subscriberId);
       if (!authData) {
-        throw new Error('Auth data not found');
+        resolve(false);
       }
 
       const eventTopic = this.getEventTopic(authData.userId);
@@ -194,7 +199,7 @@ class GraphQLSubscriptionService implements IPubSubService {
     });
   }
 
-  onDisconnect(subscriberId: string) {
+  private async onDisconnect(subscriberId: string) {
     this.subscribersAuthDatas.delete(subscriberId);
   }
 }

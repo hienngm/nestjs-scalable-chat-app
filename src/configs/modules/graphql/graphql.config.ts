@@ -1,29 +1,42 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { GqlOptionsFactory } from '@nestjs/graphql';
+import { GqlOptionsFactory, SubscriptionConfig } from '@nestjs/graphql';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { JwtService } from '@nestjs/jwt';
 import { Context } from 'graphql-ws';
 import { join } from 'path';
 import * as crypto from 'crypto';
+import * as _ from 'lodash';
 
 import { IAuthUser, ISubscriber } from 'src/common/interfaces';
+import { EnvConfigService } from 'src/configs/env/env.service';
+import { PUBSUB_SERVICE_PROVIDER } from 'src/constants';
 
 @Injectable()
 export class GraphQLConfig implements GqlOptionsFactory {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private envConfig: EnvConfigService,
+  ) {}
 
   createGqlOptions(): ApolloDriverConfig {
-    return {
-      autoSchemaFile: join(process.cwd(), 'src/graphql-schemas/schema.gql'),
-      subscriptions: {
+    const pubSubServiceProvider = this.envConfig.getPubSubServiceProvider();
+    let subscriptions: SubscriptionConfig | null = null;
+
+    if (
+      pubSubServiceProvider === PUBSUB_SERVICE_PROVIDER.GRAPHQL_SUBSCRIPTION
+    ) {
+      subscriptions = {
         'graphql-ws': {
           path: '/subscriptions',
           onConnect: async (context: Context<any>) => {
             const { connectionParams } = context;
             const extra: any = context.extra;
             const authToken = connectionParams.authToken;
-            const isValidToken = await this.isValidToken(authToken);
+            if (!_.isString(authToken)) {
+              throw new UnauthorizedException();
+            }
 
+            const isValidToken = await this.isValidToken(authToken);
             if (!isValidToken) {
               throw new UnauthorizedException();
             }
@@ -38,16 +51,21 @@ export class GraphQLConfig implements GqlOptionsFactory {
             };
             extra.subscriber = subscriber;
           },
-          onDisconnect: (context: Context<any>) => {
+          onDisconnect: async (context: Context<any>) => {
             const extra: any = context.extra;
             const subscriber: ISubscriber = extra.subscriber;
 
             if (subscriber.onDisconnect) {
-              subscriber.onDisconnect();
+              await subscriber.onDisconnect();
             }
           },
         },
-      },
+      };
+    }
+
+    return {
+      autoSchemaFile: join(process.cwd(), 'src/graphql-schemas/schema.gql'),
+      subscriptions,
     };
   }
 

@@ -28,7 +28,7 @@ export class UserRepository
   async findByChannelId(channelId: string): Promise<User[]> {
     const channelMembers = await this.channelMemberModel.find({ channelId });
     return this.userModel.find({
-      id: { $in: _.map(channelMembers, 'userId') },
+      _id: { $in: _.map(channelMembers, 'userId') },
     });
   }
 }

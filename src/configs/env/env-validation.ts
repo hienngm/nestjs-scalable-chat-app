@@ -1,6 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { IsEnum, IsNotEmpty, IsString, validateSync } from 'class-validator';
-import { NODE_ENV } from 'src/constants';
+import { NODE_ENV, PUBSUB_SERVICE_PROVIDER } from 'src/constants';
 
 class Env {
   // APPLICATION
@@ -33,6 +33,10 @@ class Env {
   @IsString()
   @IsNotEmpty()
   REDIS_CONNECTION_STRING: string;
+
+  // PUBSUB SERVICE PROVIDER
+  @IsEnum(PUBSUB_SERVICE_PROVIDER)
+  PUBSUB_SERVICE_PROVIDER: string;
 }
 
 export function validate(config: Record<string, unknown>) {
