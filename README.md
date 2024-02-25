@@ -12,9 +12,7 @@ Check out my article ["Designing a Highly Scalable Chat Application for Handling
 ### Tech Stack:
 
 <p align="center">
-  <a href="https://nestjs.com/" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nestjs/nestjs-plain.svg" alt="nestjs" width="86" height="86" />
-  </a>
+  <a href="https://nestjs.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/nestjs/nestjs-icon.svg" alt="nestjs" width="86" height="86"/> </a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://graphql.org" target="_blank" rel="noreferrer">
     <img src="https://www.vectorlogo.zone/logos/graphql/graphql-icon.svg" alt="graphql" width="86" height="86" />
